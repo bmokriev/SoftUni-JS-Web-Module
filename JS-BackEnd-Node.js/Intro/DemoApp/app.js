@@ -2,9 +2,11 @@ const http = require("http");
 const router = require("./router");
 const aboutController = require('./controllers/aboutController');
 const homeController = require('./controllers/homeController');
+const catalogController = require("./controllers/catalogController");
 
 router.registerHandler("/", homeController);
 router.registerHandler("/about", aboutController);
+router.registerHandler("/catalog", catalogController);
 
 const port = 3000;
 const server = http.createServer(requestHandler);
