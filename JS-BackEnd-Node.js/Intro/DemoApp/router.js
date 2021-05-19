@@ -10,7 +10,7 @@ function match(url) {
   }
 }
 
-function registerHandler(url, handler) {
+function registerHandler(method, url, handler) {
   handlers[url] = handler;
 }
 
