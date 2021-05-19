@@ -22,5 +22,8 @@ function defaultHandler(url, res) {
 
 module.exports = {
   registerHandler,
+  get: (...params) => registerHandler('GET', ...params),
+  post: (...params) => registerHandler('POST', ...params),
+  delete: (...params) => registerHandler('DELETE', ...params),
   match,
 };
