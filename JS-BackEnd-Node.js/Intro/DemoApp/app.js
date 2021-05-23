@@ -9,6 +9,7 @@ router.get("/", homeController);
 router.get("/about", aboutController);
 router.get("/catalog", catalogController);
 
+router.post('/create', createController);
 const port = 3000;
 const server = http.createServer(requestHandler);
 
