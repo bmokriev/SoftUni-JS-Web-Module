@@ -1,0 +1,9 @@
+    <h1>It works</h1>
+    <span>Name {{name}}</span><br>
+    <span>Age {{age}}</span><br>
+    <h3>Items in pocket</h3>
+    <ul>
+        {{#each items}}
+        {{> item}}
+        {{/each}}
+    </ul>
