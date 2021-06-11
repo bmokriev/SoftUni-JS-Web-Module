@@ -40,8 +40,6 @@ async function getAll(query) {
     .entries(data)
     .map(([id, v]) => Object.assign({}, { id }, v));
 
-    console.log(query);
-
     if (query.search) {
         cubes = cubes.filter(c => c.name.toLowerCase().includes(query.search.toLowerCase()));
     }
