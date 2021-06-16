@@ -11,7 +11,12 @@ module.exports = {
       difficulty: Number(req.body.difficultyLevel),
     };
 
-    await req.storage.create(cube);
+    try {
+        await req.storage.create(cube);
+    } catch (err) {
+      return res.render('create', { title: 'Create Cube', error: 'All fields are required'})
+    }
+    
 
     res.redirect('/');
   }
