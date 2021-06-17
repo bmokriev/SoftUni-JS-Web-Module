@@ -1,5 +1,6 @@
 const Cube = require('../models/Cube');
 const Comment = require('../models/Comment');
+const Accessory = require('../models/Accessory');
 
 async function init() {
     return (req, res, next) => {
@@ -7,7 +8,9 @@ async function init() {
           getAll,
           getById,
           create,
-          createComment
+          createComment,
+          createAccessory,
+          getAllAccessoaries,
         };
         next();
     }
@@ -34,7 +37,6 @@ async function getAll(query) {
 async function getById(id) {
     const cube = await Cube.findById(id).populate('comments').lean();
     if (cube) {
-        console.log(cube);
         return cube;
     }else {
         return undefined;
@@ -55,11 +57,18 @@ async function createComment(cubeId, comment) {
 
     const newComment = new Comment(comment);
     const testSave = await newComment.save();
-    console.log(testSave);
-
     cube.comments.push(newComment);
     const testSave2 = await cube.save();
-    console.log(testSave2);
+}
+
+async function getAllAccessoaries() {
+    const accessories = await Accessory.find({}).lean();
+    return accessories;
+}
+
+async function createAccessory(accessory) {
+    const record = new Accessory(accessory);
+    return record.save();
 }
 
 module.exports = {
@@ -67,5 +76,7 @@ module.exports = {
   getAll,
   getById,
   create,
-  createComment
+  createComment,
+  createAccessory,
+  getAllAccessoaries,
 };
