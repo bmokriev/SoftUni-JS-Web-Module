@@ -11,6 +11,7 @@ async function init() {
           createComment,
           createAccessory,
           getAllAccessoaries,
+          attachSticker,
         };
         next();
     }
@@ -35,7 +36,10 @@ async function getAll(query) {
 }
 
 async function getById(id) {
-    const cube = await Cube.findById(id).populate('comments').lean();
+    const cube = await Cube.findById(id)
+      .populate("comments")
+      .populate("accessories")
+      .lean();
     if (cube) {
         return cube;
     }else {
@@ -61,14 +65,25 @@ async function createComment(cubeId, comment) {
     const testSave2 = await cube.save();
 }
 
-async function getAllAccessoaries() {
-    const accessories = await Accessory.find({}).lean();
+async function getAllAccessoaries(existing) {
+    const accessories = await Accessory.find({ _id: {$nin: existing}}).lean();
     return accessories;
 }
 
 async function createAccessory(accessory) {
     const record = new Accessory(accessory);
     return record.save();
+}
+
+async function attachSticker(cubeId, stickerId) {
+    const cube = await Cube.findById(cubeId);
+    const sticker = await Accessory.findById(stickerId)
+    if (!cube || !sticker) {
+      throw new ReferenceError("No such ID in the DB");
+    }
+
+    cube.accessories.push(sticker);
+    return cube.save();
 }
 
 module.exports = {
@@ -79,4 +94,5 @@ module.exports = {
   createComment,
   createAccessory,
   getAllAccessoaries,
+  attachSticker,
 };

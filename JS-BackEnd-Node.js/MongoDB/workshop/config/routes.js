@@ -2,7 +2,7 @@ const { notfound } = require("../controllers/404");
 const { about } = require("../controllers/about");
 const { catalog } = require("../controllers/catalog");
 const { create, post } = require("../controllers/create");
-const { details, attach } = require("../controllers/details");
+const { details, attach, attachPost } = require("../controllers/details");
 const { post: postComment } = require("../controllers/comments");
 const { createAccessory, accessoryPost } = require("../controllers/accessory");
 
@@ -18,6 +18,7 @@ module.exports = (app) => {
   app.get('/accessory/create', createAccessory);
   app.post('/accessory/create', accessoryPost);
   app.get('/details/:id/attach', attach);
+  app.post('/details/:cubeId/attach', attachPost);
 
   app.get("*", notfound);
 };
