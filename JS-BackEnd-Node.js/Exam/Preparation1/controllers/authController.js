@@ -3,15 +3,22 @@ const {body, validationResult} = require('express-validator');
 const { isGuest } = require('../middlewares/guards');
 
 router.get('/register', isGuest(), (req, res) => {
-    res.render('register')
+    res.render('user/register')
 });
 
 router.post(
   "/register",
   isGuest(),
+  body('email', 'Invalid email').isEmail(),
   body("username")
     .isLength({ min: 3 })
-    .withMessage("Username must be at least 3 characters long"), //change
+    .withMessage("Username must be at least 3 characters long"),
+  body("password")
+    .isLength({ min: 5 })
+    .withMessage("Password must be at least 5 characters long")
+    .bail()
+    .matches(/[a-zA-Z0-9]/)
+    .withMessage('Password may contain only english letters and numbers'),
   body("rePass").custom((value, { req }) => {
     if (value != req.body.password) {
       throw new Error("Password don't match");
@@ -24,26 +31,28 @@ router.post(
 
     try {
       if (errors.length > 0) {
-        throw new Error("Validation error");
+          const message = errors.map(e => e.msg).join('\n')
+        throw new Error(message);
       }
-      await req.auth.register(req.body.username, req.body.password);
+      await req.auth.register(req.body.username,req.body.email, req.body.password);
 
       res.redirect("/"); //change?
     } catch (err) {
       console.log(err);
       const ctx = {
-        errors: [err.message],
+        errors: err.message.split('\n'),
         userData: {
           username: req.body.username,
+          email: req.body.email
         },
       };
-      res.render("register", ctx);
+      res.render("user/register", ctx);
     }
   }
 );
 
 router.get("/login", isGuest(), (req, res) => {
-  res.render("login");
+  res.render("user/login");
 });
 
 router.post("/login", isGuest(), async (req, res) => {
@@ -57,9 +66,10 @@ router.post("/login", isGuest(), async (req, res) => {
       errors: [err.message],
       userData: {
         username: req.body.username,
+        
       },
     };
-    res.render("login", ctx);
+    res.render("user/login", ctx);
   }
 });
 
